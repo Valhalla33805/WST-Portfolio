@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALGORITHM | Aljomar O. Gonzales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        cyber: ['Orbitron', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        void: '#010103',
+                        abyss: '#04040a',
+                        neonMint: '#00F5A0',
+                        cyberPulse: '#3B82F6',
+                        hotViolet: '#A855F7',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Smooth Scroll & Custom Spatial Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #010103; }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.25); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00F5A0; }
+
+        /* Multi-Layer 3D Glassmorphism Panel Setup */
+        .glass-card {
+            background: rgba(4, 4, 12, 0.45);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-nav {
+            background: rgba(1, 1, 3, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        /* Shimmering Text Logic */
+        .shimmer-text {
+            background: linear-gradient(to right, #ffffff 10%, #3B82F6 40%, #00F5A0 60%, #ffffff 90%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 6s linear infinite;
+        }
+        @keyframes textShimmer { to { background-position: 200% center; } }
+
+        /* Spatial Grid Environment Overlay */
+        .animated-mesh {
+            background-size: 60px 60px;
+            background-image: 
+                linear-gradient(to right, rgba(59, 130, 246, 0.015) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(59, 130, 246, 0.015) 1px, transparent 1px);
+        }
+
+        /* 3D Viewport Matrix */
+        .scene-perspective {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+
+        /* Multi-Axis 3D Preserved Rotations */
+        .tilt-node {
+            transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+        .tilt-node:hover {
+            border-color: rgba(0, 245, 160, 0.3);
+            box-shadow: 0 35px 70px rgba(0, 245, 160, 0.08);
+        }
+
+        /* Deep Parallax Element Separation */
+        .layer-depth-3d { transform: translateZ(40px); }
+        .layer-depth-text { transform: translateZ(25px); }
+
+        /* SPA Presentation Engine Animations */
+        .page-frame {
+            display: none;
+            animation: spatialSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .page-frame.active-frame { display: block; }
+        @keyframes spatialSlideIn {
+            from { opacity: 0; transform: translateZ(-100px) translateY(20px); filter: blur(6px); }
+            to { opacity: 1; transform: translateZ(0) translateY(0); filter: blur(0); }
+        }
+
+        #fluid-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .rotating-ring { animation: rotateRing 20s linear infinite; }
+        @keyframes rotateRing { to { transform: rotate(360deg); } }
+
+        .scanline::after {
+            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 245, 160, 0.06) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
+            z-index: 20; background-size: 100% 4px, 4px 100%; pointer-events: none;
+        }
+
+        /* Typewriter text cursor effect */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
+</head>
+<body class="bg-void text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-neonMint selection:text-black scene-perspective">
+
+    <canvas id="fluid-canvas"></canvas>
+    
+    <div class="fixed inset-0 animated-mesh z-10 pointer-events-none"></div>
+    <div class="fixed top-[-20%] left-[-10%] w-[65vw] h-[65vw] bg-cyberPulse/10 rounded-full blur-[150px] pointer-events-none"></div>
+    <div class="fixed bottom-[-20%] right-[-10%] w-[65vw] h-[65vw] bg-hotViolet/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <nav class="glass-nav fixed top-0 left-0 w-full z-50 px-6 sm:px-12 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3 select-none font-mono">
+            <div class="relative w-7 h-7 flex items-center justify-center bg-white/[0.02] border border-white/10 rounded-lg p-1.5 shadow-[inset_0_0_12px_rgba(255,255,255,0.02)]">
+                <svg class="w-full h-full text-neonMint filter drop-shadow-[0_0_8px_rgba(0,245,160,0.4)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <span class="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-cyberPulse rounded-full shadow-[0_0_8px_#3B82F6]"></span>
+            </div>
+            <div class="flex flex-col">
+                <span class="font-cyber text-sm tracking-[0.25em] text-white font-bold leading-none">ALGORITHM<span class="text-neonMint">.</span></span>
+                <span class="text-[9px] text-gray-500 tracking-wider font-mono mt-1 uppercase">Aljomar O. Gonzales</span>
+            </div>
+        </div>
+
+        <div class="flex space-x-1 font-mono text-[11px] bg-black/60 border border-white/10 p-1 rounded-xl">
+            <button onclick="changeTab('genesis')" id="tab-genesis" class="px-4 py-2 rounded-lg transition-all duration-300 text-white bg-gradient-to-r from-cyberPulse/20 to-transparent border border-white/10 font-medium">01_GENESIS</button>
+            <button onclick="changeTab('deployments')" id="tab-deployments" class="px-4 py-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-white">02_DEPLOYMENTS</button>
+            <button onclick="changeTab('identity')" id="tab-identity" class="px-4 py-2 rounded-lg transition-all duration-300 text-gray-400 hover:text-white">03_IDENTITY</button>
+        </div>
+    </nav>
+
+    <main class="relative z-20 max-w-6xl mx-auto px-6 pt-32 pb-24 min-h-[88vh] flex flex-col justify-center">
+
+        <div id="view-genesis" class="page-frame active-frame space-y-16 max-w-5xl">
+            
+            <div class="space-y-6 max-w-4xl">
+                <div class="inline-flex items-center gap-4 px-3 py-1 text-[11px] font-mono tracking-widest text-neonMint uppercase bg-neonMint/5 border border-neonMint/20 rounded-md">
+                    <span>✓ SYSTEM SECURE: ACTIVE</span>
+                    <span class="text-gray-600">|</span>
+                    <span id="live-clock" class="text-gray-400">00:00:00 UTC</span>
+                </div>
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight font-cyber text-white leading-[1.1] min-h-[2.2em] sm:min-h-[0px]">
+                    Deploying Logical, <br class="hidden sm:block"><span class="shimmer-text typing-cursor" id="typewriter-target">Reactive Code.</span>
+                </h1>
+                <p class="text-base sm:text-lg text-gray-400 font-light leading-relaxed max-w-2xl font-sans">
+                    I am Aljomar O. Gonzales, the programmer behind the <strong class="text-white font-medium">ALGORITHM</strong> matrix. As an IT Specialist and Frontend Engineer, I architect high-performance web solutions focused on responsive UI/UX, scalable client-side logic, and seamless database integration. I specialize in building data-driven applications that bridge complex backend structures with fluid, hardware-accelerated user interfaces.
+                </p>
+                <div class="pt-4 flex flex-col sm:flex-row gap-4 font-mono text-xs">
+                    <button onclick="changeTab('deployments')" class="px-7 py-4 font-bold uppercase tracking-wider text-black bg-neonMint hover:bg-white shadow-lg shadow-neonMint/10 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                        Inspect Production Logs ->
+                    </button>
+                    <button onclick="changeTab('identity')" class="px-7 py-4 font-bold uppercase tracking-wider text-gray-300 border border-white/10 rounded-lg hover:bg-white/5 hover:text-white transition-all duration-300">
+                        Verify Operator Credentials
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="border-l-2 border-cyberPulse pl-4">
+                    <span class="text-[10px] font-mono text-cyberPulse uppercase tracking-widest">[Operational Protocol]</span>
+                    <h3 class="text-xl font-bold font-cyber text-white tracking-tight mt-0.5">Development & Structural Lifecycle</h3>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-sans">
+                    <div class="glass-card p-5 rounded-xl border border-white/5 space-y-2 tilt-node" onmousemove="tiltCard(event)" onmouseleave="resetTilt(event)">
+                        <span class="font-mono text-xs text-cyberPulse block font-bold layer-depth-text">01 // STRUCT_MAP</span>
+                        <h4 class="text-sm font-bold text-white layer-depth-text">Algorithmic Diagnostics</h4>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed layer-depth-text">Deconstructing technical problems directly into logical milestones before committing syntax.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-xl border border-white/5 space-y-2 tilt-node" onmousemove="tiltCard(event)" onmouseleave="resetTilt(event)">
+                        <span class="font-mono text-xs text-cyberPulse block font-bold layer-depth-text">02 // RESP_DEV</span>
+                        <h4 class="text-sm font-bold text-white layer-depth-text">Reactive UI Layouts</h4>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed layer-depth-text">Assembling modern styles utilizing mobile-first, semantic layout configurations.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-xl border border-white/5 space-y-2 tilt-node" onmousemove="tiltCard(event)" onmouseleave="resetTilt(event)">
+                        <span class="font-mono text-xs text-cyberPulse block font-bold layer-depth-text">03 // MEDIA_OPT</span>
+                        <h4 class="text-sm font-bold text-white layer-depth-text">Assets Processing</h4>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed layer-depth-text">Configuring and tuning multimedia assets dynamically using professional editing matrices.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-xl border border-white/5 space-y-2 tilt-node" onmousemove="tiltCard(event)" onmouseleave="resetTilt(event)">
+                        <span class="font-mono text-xs text-cyberPulse block font-bold layer-depth-text">04 // STABLE_ENV</span>
+                        <h4 class="text-sm font-bold text-white layer-depth-text">End-to-End Auditing</h4>
+                        <p class="text-xs text-gray-400 font-light leading-relaxed layer-depth-text">Validating variable pipelines to guarantee absolute application runtime consistency.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-deployments" class="page-frame space-y-12">
+            <div class="border-b border-white/5 pb-5">
+                <span class="text-xs font-mono text-cyberPulse uppercase tracking-widest">[Compiled Production Logs]</span>
+                <h2 class="text-3xl font-bold font-cyber text-white tracking-tight mt-0.5">Live Functional Deployments</h2>
+            </div>
+
+            <div id="projects-grid-target" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                </div>
+        </div>
+
+        <div id="view-identity" class="page-frame space-y-16">
+            
+            <div class="space-y-12">
+                <div class="border-b border-white/5 pb-5">
+                    <span class="text-xs font-mono text-neonMint uppercase tracking-widest">[Verified Operator Profile]</span>
+                    <h2 class="text-3xl font-bold font-cyber text-white tracking-tight mt-0.5">Identity Parameters & Routes</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+                    
+                    <div class="md:col-span-5 flex flex-col justify-between glass-card p-6 rounded-2xl relative overflow-hidden group border border-white/10 shadow-2xl tilt-node" onmousemove="tiltCard(event)" onmouseleave="resetTilt(event)">
+                        <div class="absolute inset-2 rounded-2xl bg-gradient-to-tr from-cyberPulse/20 to-neonMint/20 blur-xl opacity-40 group-hover:opacity-80 transition-opacity duration-500 transform translateZ(-20px)"></div>
+
+                        <div class="space-y-4 relative z-10 layer-depth-3d flex-grow flex flex-col justify-between">
+                            <div class="flex justify-between items-center font-mono text-[10px] text-gray-500 border-b border-white/5 pb-3">
+                                <span class="text-neonMint tracking-wider animate-pulse">● CAPTURE_NODE_ONLINE</span>
+                                <span>REC_ID // 1117</span>
+                            </div>
+                            
+                            <div class="w-full aspect-square relative transition-colors duration-500 my-auto flex items-center justify-center">
+                                <svg class="rotating-ring absolute -inset-4 w-[calc(100%+32px)] h-[calc(100%+32px)] text-cyberPulse opacity-20 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                                    <circle cx="50" cy="50" r="47.5" stroke="currentColor" stroke-width="1.2" stroke-dasharray="8 6 3 6" fill="none"/>
+                                </svg>
+                                
+                                <div class="w-[92%] h-[92%] rounded-full overflow-hidden relative border border-white/10 flex items-center justify-center text-center scanline group-hover:border-neonMint/40 transition-all duration-500 shadow-[0_25px_50px_rgba(0,0,0,0.7)]">
+                                    <img src="Myself.jpg" alt="Aljomar O. Gonzales" class="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-700 ease-out z-10 relative">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-void via-transparent to-transparent opacity-60 z-20"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-white/5 font-mono text-[10px] flex justify-between text-gray-400 relative z-10 layer-depth-text">
+                            <span class="tracking-wider">RESOL_MAPPED // 1080px</span>
+                            <span class="text-neonMint">SYS_OPERATIONAL</span>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-7 flex flex-col justify-between space-y-6">
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                            <div class="glass-card p-5 rounded-xl border-t-2 border-cyberPulse group hover:border-neonMint/40 transition-colors duration-300">
+                                <span class="text-gray-500 block text-[9px] tracking-widest uppercase mb-1">// ARCHITECT_NAME</span>
+                                <span class="text-base font-cyber font-bold text-white tracking-wide">Aljomar O. Gonzales</span>
+                            </div>
+                            <div class="glass-card p-5 rounded-xl border-t-2 border-hotViolet group hover:border-neonMint/40 transition-colors duration-300">
+                                <span class="text-gray-500 block text-[9px] tracking-widest uppercase mb-1">// AGE_TIMELINE</span>
+                                <span class="text-base font-cyber font-bold text-white tracking-wide">21 Cycles (Nov 17, 2004)</span>
+                            </div>
+                            <div class="glass-card p-5 rounded-xl border-t-2 border-neonMint sm:col-span-2 group hover:border-cyberPulse/40 transition-colors duration-300">
+                                <span class="text-gray-500 block text-[9px] tracking-widest uppercase mb-1">// REGIONAL_COORDINATES</span>
+                                <span class="text-sm font-cyber font-bold text-white tracking-wide">Maasin City, Southern Leyte, Philippines</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-[11px]">
+                            <div class="bg-white/[0.01] border border-white/5 p-4 rounded-xl flex items-start gap-3 hover:bg-white/[0.02] transition-colors">
+                                <div class="text-neonMint filter drop-shadow-[0_0_5px_rgba(0,245,160,0.5)]">✔</div>
+                                <div>
+                                    <span class="text-white font-cyber block font-bold text-xs tracking-wide">Maasin District Verification</span>
+                                    <span class="text-gray-400 text-xs font-light leading-relaxed">Successfully logged combined theoretical syntax execution and practical deployment trials.</span>
+                                </div>
+                            </div>
+                            <div class="bg-white/[0.01] border border-white/5 p-4 rounded-xl flex items-start gap-3 hover:bg-white/[0.02] transition-colors">
+                                <div class="text-cyberPulse filter drop-shadow-[0_0_5px_rgba(59,130,246,0.5)]">⚡</div>
+                                <div>
+                                    <span class="text-white font-cyber block font-bold text-xs tracking-wide">Badminton Athlete</span>
+                                    <span class="text-gray-400 text-xs font-light leading-relaxed">Active athletic speed competitor.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-card p-6 rounded-xl space-y-6 flex-grow flex flex-col justify-center">
+                            <h4 class="text-xs font-mono font-bold uppercase tracking-widest text-white border-b border-white/5 pb-3 flex justify-between items-center">
+                                <span>// ACADEMIC TIMELINE VECTOR LOGS</span>
+                                <span class="w-2 h-2 rounded-full bg-cyberPulse shadow-[0_0_8px_#3B82F6]"></span>
+                            </h4>
+                            
+                            <div class="space-y-4">
+                                <div class="relative pl-6 border-l border-white/10 space-y-0.5">
+                                    <div class="absolute -left-[4px] top-1.5 w-2 h-2 bg-cyberPulse rounded-full shadow-[0_0_6px_#3B82F6]"></div>
+                                    <span class="font-mono text-[9px] text-gray-500">[2024 - 2025 // STATION_01 // BSIT 2B]</span>
+                                    <h5 class="text-white font-cyber text-xs font-bold tracking-wide">Cebu Institute of Technology - University</h5>
+                                    <p class="text-gray-400 text-xs font-light leading-relaxed font-sans">
+                                        Assembled advanced programming algorithms, data architecture designs, and core object logic matrices.
+                                    </p>
+                                </div>
+                                
+                                <div class="relative pl-6 border-l border-white/10 space-y-0.5 pt-2">
+                                    <div class="absolute -left-[4px] top-3.5 w-2 h-2 bg-neonMint rounded-full shadow-[0_0_6px_#00F5A0]"></div>
+                                    <span class="font-mono text-[9px] text-gray-500">[CURRENT_STATION // PRODUCTION_BASE]</span>
+                                    <h5 class="text-white font-cyber text-xs font-bold tracking-wide">College of Maasin</h5>
+                                    <p class="text-gray-400 text-xs font-light leading-relaxed font-sans">
+                                        Engineering real-world client scripts, full structural asynchronous file fetches, and dynamic user interfaces.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 max-w-3xl">
+                <div class="border-l-2 border-neonMint pl-4">
+                    <span class="text-[10px] font-mono text-neonMint uppercase tracking-widest">[Secure Terminal Gateway]</span>
+                    <h3 class="text-xl font-bold font-cyber text-white tracking-tight mt-0.5">Secure Transmission Node</h3>
+                </div>
+                
+                <div class="glass-card p-6 sm:p-8 rounded-2xl border border-white/5 space-y-4 font-mono text-xs relative overflow-hidden" id="form-container">
+                    <form id="secure-form" action="https://formspree.io/f/xbdvrzew" method="POST" class="space-y-4 transition-all duration-500">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-gray-500 block uppercase text-[10px] tracking-wider">Client Token / Name</label>
+                                <input type="text" id="client-token" required placeholder="Identity or Organization" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyberPulse transition-colors">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-gray-500 block uppercase text-[10px] tracking-wider">Routing Protocol (Email)</label>
+                                <input type="email" id="client-email" required placeholder="client@domain.com" class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyberPulse transition-colors">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-gray-500 block uppercase text-[10px] tracking-wider">Data Payload Description</label>
+                            <textarea rows="4" id="client-payload" required placeholder="Detail project parameters or secure communication inquiries..." class="w-full bg-black/50 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-cyberPulse transition-colors resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-cyberPulse to-blue-600 text-white font-bold uppercase tracking-wider rounded-lg transition-transform hover:-translate-y-0.5 text-center font-cyber text-[11px]">
+                            Transmit Encrypted Payload
+                        </button>
+                    </form>
+
+                    <div id="terminal-receipt" class="hidden absolute inset-0 bg-black/95 p-6 flex flex-col justify-between text-left font-mono text-[11px] text-neonMint border border-neonMint/20 rounded-2xl">
+                        <div class="space-y-2 overflow-y-auto" id="terminal-logs"></div>
+                        <button onclick="resetTerminalForm()" class="mt-4 self-start px-4 py-2 border border-neonMint/30 text-neonMint bg-neonMint/5 hover:bg-neonMint hover:text-black rounded transition-all duration-300 uppercase text-[10px] font-bold tracking-widest">
+                            Reset Channel Array
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="relative z-20 text-center text-[9px] text-gray-600 font-mono tracking-[0.3em] pb-12 select-none">
+        &copy; 2026 ALGORITHM ENGINE. ALL PLATFORM SESSIONS CLOSED AND ENCRYPTED.
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           1. ASYNCHRONOUS DYNAMIC FETCH ENGINE (LOADS DATA FROM PROJECTS.JSON)
+           ========================================================================== */
+        async function loadAndCompileProjects() {
+            const container = document.getElementById('projects-grid-target');
+            if(!container) return;
+            
+            try {
+                // Fetch the external json database file configuration mapping
+                const response = await fetch('./projects.json');
+                if (!response.ok) throw new Error('Database file could not be requested.');
+                
+                const myProjectsList = await response.json();
+                let htmlOutput = "";
+                
+                myProjectsList.forEach(project => {
+                    const isNeon = project.themeColor === 'neonMint';
+                    const badgeColor = isNeon ? 'text-neonMint bg-neonMint/10 border-neonMint/20' : 'text-cyberPulse bg-cyberPulse/10 border-cyberPulse/20';
+                    const hoverAccent = isNeon ? 'group-hover:text-neonMint' : 'group-hover:text-cyberPulse';
+                    
+                    htmlOutput += `
+                        <div class="glass-card tilt-node rounded-2xl p-6 sm:p-8 space-y-6 flex flex-col justify-between group" onmousemove="tiltCard(event)" onmouseleave="resetTilt(event)">
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center layer-depth-text">
+                                    <span class="text-[9px] font-mono uppercase border px-2.5 py-0.5 rounded ${badgeColor}">${project.category}</span>
+                                    <span class="text-xs font-mono text-gray-600">${project.id}</span>
+                                </div>
+                                <h3 class="text-xl sm:text-2xl font-bold font-cyber text-white transition-colors layer-depth-3d ${hoverAccent}">${project.title}</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed font-light font-sans layer-depth-text">${project.description}</p>
+                                <div class="flex flex-wrap gap-1.5 pt-2 font-mono text-[10px] layer-depth-text">
+                                    ${project.tags.map(tag => `<span class="bg-white/5 px-2.5 py-1 rounded border border-white/5 text-gray-400">${tag}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="pt-5 border-t border-white/5 font-mono text-xs flex justify-between items-center text-gray-500 layer-depth-text">
+                                <span>Status: Operational</span>
+                                <a href="${project.url}" target="_blank" class="text-white transition ${isNeon ? 'hover:text-neonMint' : 'hover:text-cyberPulse'}">${project.linkText}</a>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = htmlOutput;
+                
+            } catch (error) {
+                console.error('Database configuration log fetch failure:', error);
+                container.innerHTML = `<p class="text-xs font-mono text-red-400/70 p-4 col-span-2 text-center border border-red-500/10 rounded-xl bg-red-500/[0.02]">>> SYSTEM WARNING: FAILED TO STREAM PROJECTS FROM SEPARATE DATA OBJECT RESOURCE.</p>`;
+            }
+        }
+
+        // System Core Orchestration Lifecycle Trigger Hook
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAndCompileProjects(); // Fire dynamic portfolio compilation logic
+            updateSystemClock();
+            setTimeout(processTypewriterEngine, 1000);
+            buildMeshNetwork();
+            loopNetworkDraw();
+        });
+
+        /* ==========================================================================
+           2. INTERACTIVE ROUTING, VECTOR TILT LAYERS & GRAPHICS SUB-SYSTEMS
+           ========================================================================== */
+        function changeTab(tabId) {
+            document.querySelectorAll('.page-frame').forEach(frame => frame.classList.remove('active-frame'));
+            document.getElementById('view-' + tabId).classList.add('active-frame');
+            document.querySelectorAll('nav button').forEach(btn => btn.className = "px-4 py-2 rounded-lg transition-all duration-300 text-gray-400");
+            document.getElementById('tab-' + tabId).className = "px-4 py-2 rounded-lg transition-all duration-300 text-white bg-gradient-to-r from-cyberPulse/20 to-transparent border border-white/10 font-medium";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function tiltCard(event) {
+            const card = event.currentTarget;
+            const cardRect = card.getBoundingClientRect();
+            const xRotation = (((event.clientY - cardRect.top) - cardRect.height / 2) / (cardRect.height / 2)) * -12;
+            const yRotation = (((event.clientX - cardRect.left) - cardRect.width / 2) / (cardRect.width / 2)) * 12;
+            card.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg) translateY(-8px) translateZ(10px)`;
+        }
+
+        function resetTilt(event) {
+            event.currentTarget.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0px) translateZ(0px)';
+        }
+
+        function updateSystemClock() {
+    const clockNode = document.getElementById('live-clock');
+    if (clockNode) {
+        const now = new Date();
+        
+        // 1. Get a clean, short date string (e.g., "Jun 21, 2026")
+        const dateString = now.toLocaleDateString("en-US", {
+            timeZone: "Asia/Manila",
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        });
+
+        // 2. Get a standard 12-hour time string (e.g., "10:05:45 PM")
+        const timeString = now.toLocaleTimeString("en-US", {
+            timeZone: "Asia/Manila",
+            hour12: true,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+        
+        // 3. Combine them seamlessly onto the HUD
+        clockNode.textContent = `✓ PST // ${dateString} // ${timeString}`;
+    }
+}
+setInterval(updateSystemClock, 1000);
+
+        const phrases = ["Reactive Logic Matrix.", "Optimized Scripting Arrays.", "High-Fidelity Media Frameworks."];
+        let phraseIdx = 0, charIdx = 0, isDeleting = false;
+        
+        function processTypewriterEngine() {
+            const currentText = phrases[phraseIdx];
+            const targetElement = document.getElementById('typewriter-target');
+            if(!targetElement) return;
+
+            targetElement.textContent = isDeleting ? currentText.substring(0, charIdx - 1) : currentText.substring(0, charIdx + 1);
+            charIdx = isDeleting ? charIdx - 1 : charIdx + 1;
+            let typeSpeed = isDeleting ? 30 : 75;
+
+            if (!isDeleting && charIdx === currentText.length) { typeSpeed = 2200; isDeleting = true; }
+            else if (isDeleting && charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; typeSpeed = 400; }
+            setTimeout(processTypewriterEngine, typeSpeed);
+        }
+
+        /* ==========================================================================
+           3. SECURE CONTACT TRANSMISSION NODE (FORMSPREE API INTEGRATION)
+           ========================================================================== */
+        document.getElementById('secure-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Stop standard redirect behavior
+            
+            const form = e.target;
+            const email = document.getElementById('client-email').value;
+            const token = document.getElementById('client-token').value;
+            const payload = document.getElementById('client-payload').value;
+            const logBox = document.getElementById('terminal-logs');
+            
+            // Unhide the terminal screen overlay and clear previous logs
+            document.getElementById('terminal-receipt').classList.remove('hidden');
+            logBox.innerHTML = '';
+
+            let logs = [
+                `>> INITIALIZING ENCRYPTED PACKET HANDSHAKE...`,
+                `>> LOCAL CHANNEL ESTABLISHED TO ADDRESS: [${email}]`,
+                `>> PACKAGING DATA DATA VECTOR SIZES...`
+            ];
+
+            async function printLogLine(text, isError = false) {
+                return new Promise((resolve) => {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.textContent = text;
+                    if (isError) lineDiv.className = "text-red-400 font-bold animate-pulse";
+                    logBox.appendChild(lineDiv);
+                    logBox.parentElement.scrollTop = logBox.parentElement.scrollHeight;
+                    setTimeout(resolve, 300);
+                });
+            }
+
+            for (const log of logs) {
+                await printLogLine(log);
+            }
+
+            const formData = new FormData();
+            formData.append('Name/Token', token);
+            formData.append('Email/Protocol', email);
+            formData.append('Payload/Description', payload);
+
+            await printLogLine(`>> TRANSMITTING PACKET OVER LIVE WEB PROTOCOLS...`);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    await printLogLine(`>> DATA STREAM SUCCESSFULLY RECEIVED BY SECURE ROUTER API.`);
+                    await printLogLine(`>> PARSING DATA AND VERIFYING INTEGRITY LOGS...`);
+                    await printLogLine(`>> SUCCESS: COPIES DISPATCHED TO OPERATOR INBOX. STATUS: SECURE.`, false);
+                    form.reset();
+                } else {
+                    throw new Error('Server returned non-ok status');
+                }
+            } catch (error) {
+                await printLogLine(`>> !! TRANSMISSION FAILURE CODE 400 !!`, true);
+                await printLogLine(`>> ERROR: DATA VECTOR LOST IN TRANSIT. PROTOCOL REFUSED.`, true);
+                await printLogLine(`>> PLEASE RE-CHECK NETWORK FRAME OR ATTEMPT DIRECT CHANNEL LOGGING.`, true);
+            }
+        });
+
+        function resetTerminalForm() {
+            document.getElementById('secure-form').reset();
+            document.getElementById('terminal-receipt').classList.add('hidden');
+        }
+
+        // Dynamic Interactive Canvas Coordinates Physics logic
+        const canvas = document.getElementById('fluid-canvas');
+        const ctx = canvas.getContext('2d');
+        let points = [];
+        let mouse = { x: null, y: null, radius: 160 };
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; buildMeshNetwork(); });
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+
+        class NetworkNode {
+            constructor() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.vx = Math.random() * 0.4 - 0.2; this.vy = Math.random() * 0.4 - 0.2; this.baseRadius = Math.random() * 1.5 + 0.5; this.currentRadius = this.baseRadius; }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1; if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                if (mouse.x !== null && mouse.y !== null) {
+                    let dx = mouse.x - this.x, dy = mouse.y - this.y, dist = Math.hypot(dx, dy);
+                    if (dist < mouse.radius) { this.currentRadius = this.baseRadius * 2.5; this.x -= dx * 0.01; this.y -= dy * 0.01; }
+                    else if(this.currentRadius > this.baseRadius) this.currentRadius -= 0.1;
+                }
+            }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2); ctx.fillStyle = this.currentRadius > this.baseRadius ? '#00F5A0' : 'rgba(59, 130, 246, 0.25)'; ctx.fill(); }
+        }
+
+        function buildMeshNetwork() { points = []; const count = (canvas.width * canvas.height) / 10000; for(let i = 0; i < count; i++) points.push(new NetworkNode()); }
+        function loopNetworkDraw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for(let i = 0; i < points.length; i++) {
+                points[i].update(); points[i].draw();
+                for(let j = i + 1; j < points.length; j++) {
+                    const dist = Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
+                    if(dist < 120) {
+                        ctx.beginPath(); ctx.moveTo(points[i].x, points[i].y); ctx.lineTo(points[j].x, points[j].y);
+                        ctx.strokeStyle = points[i].currentRadius > points[i].baseRadius ? `rgba(0, 245, 160, ${0.1 * (1 - dist/120)})` : `rgba(59, 130, 246, ${0.04 * (1 - dist/120)})`;
+                        ctx.lineWidth = 0.5; ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(loopNetworkDraw);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "LN_01",
+    "title": "Dairy Box Website",
+    "category": "Commercial Logistics",
+    "themeColor": "neonMint",
+    "description": "This website is the official interactive digital storefront and automated ordering hub for Dairy Box, a community enterprise powered by the Pinoy Multi-Purpose Cooperative (Pinoy MPC) in Maasin City. It pulls real-time data directly from a live Google Sheet to display an up-to-date dairy menu with current pricing, nutritional health benefits, and instant stock availability. Through a streamlined checkout form powered by Formspree, local customers can easily submit order requests for Cash on Delivery (COD) or GCash, empowering local agri-producers while making community delivery management effortless.",
+    "tags": ["Web Notification APIs", "Data Form Parsing", "Tailwind Framework"],
+    "linkText": "Run Dairy Box Web >>",
+    "url": "https://pinoycoop.github.io/DairyBox/"
+  },
+  {
+    "id": "LN_02",
+    "title": "TCM Queuing Management System",
+    "category": "Logistical Array",
+    "themeColor": "cyberPulse",
+    "description": "CM QueueHub is a digital, cloud-based queue management system designed to replace manual waiting lines with a real-time, multi-window interface that streamlines service delivery in institutional settings. By enabling users to join a live digital queue—with automated priority handling for PWDs and elderly individuals—the system ensures a fair, organized, and inclusive flow of traffic across multiple service windows. Admins gain full control through an integrated dashboard that tracks active status, monitors transaction durations, and automatically logs data for performance analysis, effectively eliminating operational bottlenecks and providing a seamless, transparent experience for both service providers and visitors.",
+    "tags": ["Reactive States", "Data Sorting", "Control Dashboards"],
+    "linkText": "Run Queue System >>",
+    "url": "https://valhalla33805.github.io/FinanceTest/"
+  },
+  {
+    "id": "LN_03",
+    "title": "3D Local Visual Map",
+    "category": "Spatial Render Node",
+    "themeColor": "cyberPulse",
+    "description": "Formulating hardware-accelerated spatial assets running fluidly inside local browser environments. Configured on custom geographic map layouts, vector tracking points, character skill metrics, and extensive system variable models.",
+    "tags": ["HTML5 Canvas", "Vector Arrays", "Coordinate Systems"],
+    "linkText": "Run 3D Map >>",
+    "url": "https://valhalla33805.github.io/PugalingFL/"
+  },
+  {
+  "id": "LN_04",
+  "title": "SmashHub: Badminton Arena Manager",
+  "category": "Logistical Array",
+  "themeColor": "cyberPulse",
+  "description": "SmashHub is an interactive badminton arena management dashboard designed to streamline court queueing, match scheduling, and player performance analytics. The system features a real-time management interface where users can register players, track win rates, and manage match results through an intuitive digital hub. It includes advanced functionality such as skill-based matchmaking, custom match deployment tools, and maintenance controls for individual courts, effectively eliminating operational bottlenecks for court owners and players alike.",
+  "tags": ["Reactive States", "Performance Analytics", "Matchmaking Logic"],
+  "linkText": "Run SmashHub >>",
+  "url": "https://valhalla33805.github.io/Queueing/"
+}
+]
